@@ -2,7 +2,8 @@
 Yoke: Connect and Work Out Together
 Yoke is a social fitness app designed to connect UT Austin students who are interested in working out at Gregory Gym or RecSports facilities. The app allows users to find workout partners, schedule workout sessions, and engage in fitness activities together.
 
-
+![Screenshot 1](test/Image%209-4-23%20at%204.50%20PM.jpeg)
+![Screenshot 2](test/Image%209-4-23%20at%204.51%20PM.jpeg)
 
 Features
 User Authentication: Users can sign up and log in using their UT Austin email address to access the app's features.
