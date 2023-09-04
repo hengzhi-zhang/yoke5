@@ -1,0 +1,6 @@
+version: "Apple Swift version 5.8.1 (swiftlang-5.8.0.124.5 clang-1403.0.22.11.100)"
+options: "ae5c5cdfe494fc73eadc81834c6898b4c367410d9a743d2263f14aff5747c52a"
+build_start_time: [1692480554, 261707000]
+build_end_time: [1692480566, 519623000]
+inputs:
+  "/Users/hengzhi/.pub-cache/hosted/pub.dev/desktop_webview_auth-0.0.13/macos/Classes/DesktopWebviewAuthPlugin.swift": [1692052169, 33128692]

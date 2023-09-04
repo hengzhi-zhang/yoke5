@@ -1,0 +1,21 @@
+version: "Apple Swift version 5.8.1 (swiftlang-5.8.0.124.5 clang-1403.0.22.11.100)"
+options: "fb59fcac43b920a84cd91202a283454f0e1df1616828441008091a85117ddb7c"
+build_start_time: [1692054605, 7765000]
+build_end_time: [1692054605, 65349000]
+inputs:
+  "/Users/hengzhi/yoke_app4/macos/Pods/FirebaseCoreInternal/FirebaseCore/Internal/Sources/HeartbeatLogging/Heartbeat.swift": !private [1692054569, 721008126]
+  ? "/Users/hengzhi/yoke_app4/macos/Pods/FirebaseCoreInternal/FirebaseCore/Internal/Sources/HeartbeatLogging/HeartbeatController.swift"
+  : !private [1692054569, 722445538]
+  ? "/Users/hengzhi/yoke_app4/macos/Pods/FirebaseCoreInternal/FirebaseCore/Internal/Sources/HeartbeatLogging/HeartbeatLoggingTestUtils.swift"
+  : !private [1692054569, 723001495]
+  "/Users/hengzhi/yoke_app4/macos/Pods/FirebaseCoreInternal/FirebaseCore/Internal/Sources/HeartbeatLogging/HeartbeatStorage.swift": !private [1692054569, 724188491]
+  "/Users/hengzhi/yoke_app4/macos/Pods/FirebaseCoreInternal/FirebaseCore/Internal/Sources/HeartbeatLogging/HeartbeatsBundle.swift": !private [1692054569, 724449240]
+  "/Users/hengzhi/yoke_app4/macos/Pods/FirebaseCoreInternal/FirebaseCore/Internal/Sources/HeartbeatLogging/HeartbeatsPayload.swift": !private [1692054569, 724907238]
+  "/Users/hengzhi/yoke_app4/macos/Pods/FirebaseCoreInternal/FirebaseCore/Internal/Sources/HeartbeatLogging/RingBuffer.swift": !private [1692054569, 721288667]
+  "/Users/hengzhi/yoke_app4/macos/Pods/FirebaseCoreInternal/FirebaseCore/Internal/Sources/HeartbeatLogging/Storage.swift": !private [1692054569, 720737794]
+  "/Users/hengzhi/yoke_app4/macos/Pods/FirebaseCoreInternal/FirebaseCore/Internal/Sources/HeartbeatLogging/StorageFactory.swift": !private [1692054569, 725074237]
+  "/Users/hengzhi/yoke_app4/macos/Pods/FirebaseCoreInternal/FirebaseCore/Internal/Sources/HeartbeatLogging/WeakContainer.swift": !private [1692054569, 724668447]
+  ? "/Users/hengzhi/yoke_app4/macos/Pods/FirebaseCoreInternal/FirebaseCore/Internal/Sources/HeartbeatLogging/_ObjC_HeartbeatController.swift"
+  : !private [1692054569, 722087331]
+  ? "/Users/hengzhi/yoke_app4/macos/Pods/FirebaseCoreInternal/FirebaseCore/Internal/Sources/HeartbeatLogging/_ObjC_HeartbeatsPayload.swift"
+  : !private [1692054569, 722652995]
