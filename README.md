@@ -4,6 +4,10 @@ Yoke is a social fitness app designed to connect UT Austin students who are inte
 
 ![Screenshot 1](test/Image%209-4-23%20at%204.50%20PM.jpeg)
 ![Screenshot 2](test/Image%209-4-23%20at%204.51%20PM.jpeg)
+![Screenshot 3](test/Image%209-4-23%20at%204.52%20PM.jpeg)
+![Screenshot 4](test/Image%209-4-23%20at%204.53%20PM%20(1).jpeg)
+![Screenshot 5](test/Image%209-4-23%20at%204.53%20PM.jpeg)
+![Screenshot 6](test/Image%209-4-23%20at%204.54%20PM.jpeg)
 
 Features
 User Authentication: Users can sign up and log in using their UT Austin email address to access the app's features.
