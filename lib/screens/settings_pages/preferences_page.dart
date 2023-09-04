@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'new_multiselect_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';  // Import this package
 import 'package:yoke_app4/main.dart';  // Import this package
-
-final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class PreferencesPage extends StatefulWidget {
   @override
@@ -12,13 +11,28 @@ class PreferencesPage extends StatefulWidget {
 
 class _PreferencesPageState extends State<PreferencesPage> {
   List<String> _preferredGenders = ["Any"];
-  String _preferredLocation = "Running";
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   // Sign out method
   void _signOut() async {
-    await FirebaseAuth.instance.signOut();
+    await _auth.signOut();
     Navigator.of(context).pushNamedAndRemoveUntil('/', (Route<dynamic> route) => false);
   }
+
+  // Save preferences to Firestore
+  void _savePreferences() async {
+  User? user = _auth.currentUser;
+  if (user != null) {
+    await _firestore.collection('users').doc(user.uid).update({
+      'preferredGenders': _preferredGenders,
+    });
+
+    // Navigate to Home Page after preferences are set
+    Navigator.pushNamed(context, '/home');
+  }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -50,19 +64,16 @@ class _PreferencesPageState extends State<PreferencesPage> {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 20.0),
               child: ElevatedButton(
-  onPressed: () {
-    // Navigate to Home Page after preferences are set
-    Navigator.pushNamed(context, '/home');
-  },
-  child: Text(
-    'Save Preferences & Proceed',
-    style: TextStyle(color: Colors.black),
-  ),
-  style: ElevatedButton.styleFrom(
-    primary: Colors.white, // This sets the background color of the button
-    onPrimary: Colors.black, // This sets the color of the text
-  ),
-),
+                onPressed: _savePreferences, // Call the save preferences method
+                child: Text(
+                  'Save Preferences & Proceed',
+                  style: TextStyle(color: Colors.black),
+                ),
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.white, // This sets the background color of the button
+                  onPrimary: Colors.black, // This sets the color of the text
+                ),
+              ),
             ),
 
             // Sign Out Button
@@ -72,9 +83,9 @@ class _PreferencesPageState extends State<PreferencesPage> {
                 onPressed: _signOut,
                 child: Text('Sign Out'),
                 style: ElevatedButton.styleFrom(
-    primary: Colors.white, // This sets the background color of the button
-    onPrimary: Colors.black, // This sets the color of the text
-  ),
+                  primary: Colors.white, // This sets the background color of the button
+                  onPrimary: Colors.black, // This sets the color of the text
+                ),
               ),
             ),
           ],
@@ -83,6 +94,7 @@ class _PreferencesPageState extends State<PreferencesPage> {
     );
   }
 }
+
 
 
 

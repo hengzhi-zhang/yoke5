@@ -45,7 +45,7 @@ class _HomePageState extends State<HomePage> {
 
       Map<String, dynamic> userData = userDoc.data() as Map<String, dynamic>;
       final name = userData['name'] ?? '';
-      final imageUrl = userData['imageUrl'] ?? '';
+      final imageUrl = userData['imageURL'] ?? '';
 
       matchedPartners.add(
         Person(name: name, imageUrl: imageUrl, userId: doc.id),
@@ -120,51 +120,58 @@ print('Received snapshot: $snapshot');
     });
   }
 
-  void _showNewMatchDialog(BuildContext context, Person newMatch) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('New Match!'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text('You have a new match with ${newMatch.name}.'),
-              SizedBox(height: 16),
-              CachedNetworkImage(
+void _showNewMatchDialog(BuildContext context, Person newMatch) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text('New Match!'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text('You have a new match with ${newMatch.name}.'),
+            SizedBox(height: 16),
+            Container(
+              width: 120,  // Adjust the width and height as needed
+              height: 120, // Make it square
+              child: CachedNetworkImage(
                 imageUrl: newMatch.imageUrl,
                 placeholder: (context, url) => CircularProgressIndicator(),
                 errorWidget: (context, url, error) => Icon(Icons.error),
+                fit: BoxFit.cover,  // Zoomed-in and centered
               ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              child: Text('Chat'),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ChatScreen(
-                      partnerName: newMatch.name,
-                      partnerId: newMatch.userId,
-                      partnerImageUrl: newMatch.imageUrl,  // Pass the partner's image URL
-                    ),
-                  ),
-                );
-              },
-            ),
-            TextButton(
-              child: Text('Close'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
             ),
           ],
-        );
-      },
-    );
-  }
+        ),
+        actions: [
+          TextButton(
+            child: Text('Chat'),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ChatScreen(
+                    partnerName: newMatch.name,
+                    partnerId: newMatch.userId,
+                    partnerImageUrl: newMatch.imageUrl,  // Pass the partner's image URL
+                  ),
+                ),
+              );
+            },
+          ),
+          TextButton(
+            child: Text('Close'),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -175,16 +182,16 @@ print('Received snapshot: $snapshot');
       ),
       body: Center(
         child: ElevatedButton(
-          onPressed: _findPartner,
-          child: Text(
-            'Find a Partner',
-            style: TextStyle(color: Colors.black, fontSize: 20),
-          ),
-          style: ElevatedButton.styleFrom(
-            primary: Colors.white,
-            padding: EdgeInsets.symmetric(horizontal: 50, vertical: 20),
-          ),
-        ),
+  onPressed: _findPartner,
+  child: Text(
+    'Find a Partner',
+    style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold),
+  ),
+  style: ElevatedButton.styleFrom(
+    primary: Colors.white,
+    padding: EdgeInsets.symmetric(horizontal: 50, vertical: 20),
+  ),
+),
       ),
     );
   }
