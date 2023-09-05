@@ -48,79 +48,83 @@ class _HomePageState extends State<HomePage> {
       final imageUrl = userData['imageURL'] ?? '';
 
       matchedPartners.add(
-        Person(name: name, imageUrl: imageUrl, userId: doc.id),
+        Person(
+          name: name,
+          imageUrl: imageUrl,
+          userId: doc.id,
+          conversationIds: [], // Initialize with an empty list
+        ),
       );
     }
   }
 
-  void _findPartner() async {
-    print("Find partner button was pressed.");
-    final usersRef = FirebaseFirestore.instance.collection('users');
-    print('Getting snapshot from Firebase.');
-QuerySnapshot snapshot = await usersRef.get();
-print('Received snapshot: $snapshot');
-    final List<QueryDocumentSnapshot> usersDocs = snapshot.docs;
+void _findPartner() async {
+  final usersRef = FirebaseFirestore.instance.collection('users');
+  QuerySnapshot snapshot = await usersRef.get();
+  final List<QueryDocumentSnapshot> usersDocs = snapshot.docs;
 
-    User? user = FirebaseAuth.instance.currentUser;
-    if (user == null) {
-      return;
-    }
-    final userId = user.uid;
+  User? user = FirebaseAuth.instance.currentUser;
+  if (user == null) {
+    return;
+  }
+  final userId = user.uid;
 
-    final alreadyMatchedIds = matchedPartners.map((partner) => partner.userId).toList();
-    final filteredUsersDocs = usersDocs.where((doc) => !alreadyMatchedIds.contains(doc.id) && doc.id != userId).toList();
+  final alreadyMatchedIds = matchedPartners.map((partner) => partner.userId).toList();
+  final filteredUsersDocs = usersDocs.where((doc) => !alreadyMatchedIds.contains(doc.id) && doc.id != userId).toList();
 
-    if (filteredUsersDocs.isEmpty) {
-      // Show a dialog saying there are no more matches left.
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('No Matches Available'),
-            content: Text('Sorry, there are no more available matches at the moment.'),
-            actions: [
-              TextButton(
-                child: Text('Close'),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          );
-        },
-      );
-      return;
-    }
-
-    
-    final randomIndex = Random().nextInt(filteredUsersDocs.length);
-    final randomUserDoc = filteredUsersDocs[randomIndex];
-    print("Randomly selected user doc: $randomUserDoc");
-    final userData = randomUserDoc.data() as Map<String, dynamic>;
-    print("User data of selected doc: $userData");
-
-    final name = userData['name'] ?? '';
-    final imageURL = userData['imageURL'] ?? '';
-    print(imageURL);
-
-    Person newMatch = Person(name: name, imageUrl: imageURL, userId: randomUserDoc.id);
-    matchedPartners.add(newMatch);
-
-    await FirebaseFirestore.instance.collection('users').doc(userId).collection('matches').doc(randomUserDoc.id).set({
-      'matchId': randomUserDoc.id,
-      'timestamp': FieldValue.serverTimestamp(),
-    });
-
-    // Call onNewMatch to notify of the new match
-    widget.onNewMatch();
-
-    // Refresh UI and show the new match dialog
-    setState(() {
-      _showNewMatchDialog(context, newMatch);
-    });
+  if (filteredUsersDocs.isEmpty) {
+    // Show a dialog saying there are no more matches left.
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('No Matches Available'),
+          content: Text('Sorry, there are no more available matches at the moment.'),
+          actions: [
+            TextButton(
+              child: Text('Close'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+    return;
   }
 
-void _showNewMatchDialog(BuildContext context, Person newMatch) {
+  final randomIndex = Random().nextInt(filteredUsersDocs.length);
+  final randomUserDoc = filteredUsersDocs[randomIndex];
+  final userData = randomUserDoc.data() as Map<String, dynamic>;
+
+  final name = userData['name'] ?? '';
+  final imageURL = userData['imageURL'] ?? '';
+  final partnerId = randomUserDoc.id; // Store the partner's ID
+
+  // Generate a conversation ID based on the user's ID and partner's ID
+  final conversationId = '${userId}_$partnerId';
+
+  Person newMatch = Person(name: name, imageUrl: imageURL, userId: partnerId, conversationIds: [conversationId]);
+  matchedPartners.add(newMatch);
+
+  await FirebaseFirestore.instance.collection('users').doc(userId).collection('matches').doc(partnerId).set({
+    'matchId': partnerId,
+    'timestamp': FieldValue.serverTimestamp(),
+  });
+
+  // Call onNewMatch to notify of the new match
+  widget.onNewMatch();
+
+  // Refresh UI and show the new match dialog
+  setState(() {
+    _showNewMatchDialog(context, newMatch, conversationId);
+
+  });
+}
+
+
+void _showNewMatchDialog(BuildContext context, Person newMatch, String conversationId) {
   showDialog(
     context: context,
     builder: (BuildContext context) {
@@ -132,13 +136,13 @@ void _showNewMatchDialog(BuildContext context, Person newMatch) {
             Text('You have a new match with ${newMatch.name}.'),
             SizedBox(height: 16),
             Container(
-              width: 120,  // Adjust the width and height as needed
-              height: 120, // Make it square
+              width: 120,
+              height: 120,
               child: CachedNetworkImage(
                 imageUrl: newMatch.imageUrl,
                 placeholder: (context, url) => CircularProgressIndicator(),
                 errorWidget: (context, url, error) => Icon(Icons.error),
-                fit: BoxFit.cover,  // Zoomed-in and centered
+                fit: BoxFit.cover,
               ),
             ),
           ],
@@ -153,7 +157,8 @@ void _showNewMatchDialog(BuildContext context, Person newMatch) {
                   builder: (context) => ChatScreen(
                     partnerName: newMatch.name,
                     partnerId: newMatch.userId,
-                    partnerImageUrl: newMatch.imageUrl,  // Pass the partner's image URL
+                    partnerImageUrl: newMatch.imageUrl,
+                    conversationID: conversationId, // Pass the conversation ID here
                   ),
                 ),
               );
@@ -172,7 +177,6 @@ void _showNewMatchDialog(BuildContext context, Person newMatch) {
 }
 
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -182,20 +186,23 @@ void _showNewMatchDialog(BuildContext context, Person newMatch) {
       ),
       body: Center(
         child: ElevatedButton(
-  onPressed: _findPartner,
-  child: Text(
-    'Find a Partner',
-    style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold),
-  ),
-  style: ElevatedButton.styleFrom(
-    primary: Colors.white,
-    padding: EdgeInsets.symmetric(horizontal: 50, vertical: 20),
-  ),
-),
+          onPressed: _findPartner,
+          child: Text(
+            'Find a Partner',
+            style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+          style: ElevatedButton.styleFrom(
+            primary: Colors.white,
+            padding: EdgeInsets.symmetric(horizontal: 50, vertical: 20),
+          ),
+        ),
       ),
     );
   }
 }
+
+
+
 
 
 

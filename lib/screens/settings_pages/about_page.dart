@@ -46,8 +46,7 @@ class AboutPage extends StatelessWidget {
               ),
               subtitle: Text(
                 'Founder & Developer\n\n'
-                'I started this project to get some real-world experience coding a production-level app from scratch. '
-                'I love everyone :)',
+                'I started this project to get some real-world experience coding a production-level app from scratch. ',
                 style: TextStyle(fontSize: 16),
               ),
             ),
